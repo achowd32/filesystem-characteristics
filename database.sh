@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# THIS SCRIPT MAPS A FILETREE STARTING AT A GIVEN NODE TO A SQLITE DATABASE
+
 # create database
 rm fsdb.db
 touch fsdb.db
