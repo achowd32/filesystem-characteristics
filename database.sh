@@ -2,6 +2,18 @@
 
 # THIS SCRIPT MAPS A FILETREE STARTING AT A GIVEN NODE TO A SQLITE DATABASE
 
+# get command line options
+verbose=0
+while getopts v opts; do
+    case $opts in
+    v) verbose=1;;
+    esac
+done
+shift $((OPTIND-1))
+
+# set options
+shopt -s nullglob
+
 # create database
 [[ -e fsdb.db ]] && rm fsdb.db; touch fsdb.db # clean and (re)create database
 sqlite3 fsdb.db 'CREATE TABLE fsgraph(id int, name text, parent text, depth int, fanout int);'
@@ -34,6 +46,6 @@ while IFS= read filename; do
 done < <(cd "$1"; find . -exec echo {} \;)
 
 # print final results
-sqlite3 fsdb.db -cmd ".mode table" "SELECT * FROM fsgraph"
+[[ $verbose -eq 1 ]] && sqlite3 fsdb.db -cmd ".mode table" "SELECT * FROM fsgraph"
 echo -n "AVERAGE DEPTH: "; sqlite3 fsdb.db "SELECT AVG(depth) FROM fsgraph"
 echo -n "AVERAGE FANOUT: "; sqlite3 fsdb.db "SELECT AVG(fanout) FROM fsgraph"

@@ -2,6 +2,15 @@
 
 # THIS SCRIPT COLLATES IMPORTANT FILESYSTEM PROPERTIES
 
+# get command line options
+verbose=0
+while getopts v opts; do
+    case $opts in
+    v) verbose=1;;
+    esac
+done
+shift $((OPTIND-1))
+
 # set properties
 shopt -s nullglob
 
@@ -32,9 +41,11 @@ while IFS= read filename; do
     ((num_nodes++))
 
     # format and print
-    printf '|%-30s| ' "${filename}"
-    printf '%-10s| ' "DEPTH: ${depth}"
-    printf '%-10s|\n' "FANOUT: ${fanout}"
+    if [[ $verbose -eq 1 ]]; then
+        printf '|%-30s| ' "${filename}"
+        printf '%-10s| ' "DEPTH: ${depth}"
+        printf '%-10s|\n' "FANOUT: ${fanout}"
+    fi
 done < <(cd "$1"; find . -exec echo {} \;)
 
 # print overall properties
