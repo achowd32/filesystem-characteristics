@@ -16,13 +16,14 @@ shopt -s nullglob
 
 # verbose print function
 vprint() {
-    # | filename | depth | fanout | filesize |
+    # | filename | depth | fanout | filesize (b) | disk (blocks) |
     printf '|%-30s| ' "$1"
     printf '%-10s| ' "$2"
     printf '%-10s| ' "$3"
-    printf '%-10s|\n' "$4"
+    printf '%-10s| ' "$4"
+    printf '%-10s|\n' "$5"
 }
-vprint "filename" "depth" "fanout" "filesize"
+vprint "filename" "depth" "fanout" "filesize" "disk (blk)"
 
 # set overall property variables
 num_nodes=0
@@ -34,6 +35,8 @@ avg_depth=0; max_depth=0
 avg_fanout=0; max_fanout=0
 
 avg_fsize=0; max_fsize=0
+
+avg_disk=0; max_disk=0
 
 # read filenames and collate properties
 while IFS= read name; do
@@ -64,11 +67,19 @@ while IFS= read name; do
         max_fsize=$((max_fsize > fsize ? max_fsize : fsize))
     fi
 
+    # calculate and save disk blocks
+    disk=NA
+    if [[ -f "$filepath" ]]; then
+        disk=$(du "$filepath" | awk '{print $1}') # should be linux safe
+        ((avg_disk += disk))
+        max_disk=$((max_disk > disk ? max_disk : disk))
+    fi 
+
     # add to number of nodes
     ((num_nodes++))
 
     # format and print
-    [[ $verbose -eq 1 ]] && vprint "$name" "$depth" "$fanout" "$fsize"
+    [[ $verbose -eq 1 ]] && vprint "$name" "$depth" "$fanout" "$fsize" "$disk"
 done < <(cd "$1"; find . -exec echo {} \;)
 
 # print overall properties
@@ -82,5 +93,8 @@ echo "MAX DEPTH: ${max_depth}"
 echo "AVERAGE FANOUT: $(echo "scale=4; $avg_fanout / $num_nodes" | bc -l)"
 echo "MAX FANOUT: ${max_fanout}"
 
-echo "AVERAGE FILESIZE: $(echo "scale=4; $avg_fsize / $num_nodes" | bc -l)"
-echo "MAX FILESIZE: ${max_fsize}"
+echo "AVERAGE FILESIZE (bytes): $(echo "scale=4; $avg_fsize / $num_files" | bc -l)"
+echo "MAX FILESIZE (bytes): ${max_fsize}"
+
+echo "AVERAGE DISK USAGE (blocks): $(echo "scale=4; $avg_disk / $num_files" | bc -l)"
+echo "MAX DISK USAGE (blocks): ${max_disk}"
