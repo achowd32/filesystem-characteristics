@@ -17,13 +17,13 @@ shopt -s nullglob
 # verbose print function
 vprint() {
     # | filename | depth | fanout | filesize (b) | disk (blocks) |
-    printf '|%-30s| ' "$1"
+    printf '|%-60s| ' "$1"
     printf '%-10s| ' "$2"
     printf '%-10s| ' "$3"
     printf '%-10s| ' "$4"
     printf '%-10s|\n' "$5"
 }
-vprint "filename" "depth" "fanout" "filesize" "disk (blk)"
+[[ $verbose -eq 1 ]] && vprint "filename" "depth" "fanout" "filesize" "disk (blk)"
 
 # set overall property variables
 num_nodes=0
