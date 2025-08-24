@@ -62,7 +62,7 @@ while IFS= read name; do
     # calculate and save filesize
     fsize=NA
     if [[ -f "$filepath" ]]; then
-        fsize=$(ls -l "$filepath" | awk '{print $5}') # should be linux safe
+        fsize=$(ls -l "$filepath" | awk '{print $5}')
         ((avg_fsize += fsize))
         max_fsize=$((max_fsize > fsize ? max_fsize : fsize))
     fi
@@ -70,7 +70,7 @@ while IFS= read name; do
     # calculate and save disk blocks
     disk=NA
     if [[ -f "$filepath" ]]; then
-        disk=$(du "$filepath" | awk '{print $1}') # should be linux safe
+        disk=$(du "$filepath" | awk '{print $1}')
         ((avg_disk += disk))
         max_disk=$((max_disk > disk ? max_disk : disk))
     fi 
@@ -87,14 +87,18 @@ echo "NUMBER OF FILES: ${num_files}"
 echo "NUMBER OF DIRECTORIES: ${num_dirs}"
 echo "NUMBER OF SYMLINKS: ${num_syml}"
 
-echo "AVERAGE DEPTH: $(echo "scale=4; $avg_depth / $num_nodes" | bc -l)"
+awk -v ad="$avg_depth" -v nn="$num_nodes" \
+    'BEGIN{printf "AVERAGE DEPTH: %.4f\n", ad/nn}'
 echo "MAX DEPTH: ${max_depth}"
 
-echo "AVERAGE FANOUT: $(echo "scale=4; $avg_fanout / $num_nodes" | bc -l)"
+awk -v af="$avg_fanout" -v nn="$num_nodes" \
+    'BEGIN{printf "AVERAGE FANOUT: %.4f\n", af/nn}'
 echo "MAX FANOUT: ${max_fanout}"
 
-echo "AVERAGE FILESIZE (bytes): $(echo "scale=4; $avg_fsize / $num_files" | bc -l)"
+awk -v af="$avg_fsize" -v nn="$num_files" \
+    'BEGIN{printf "AVERAGE FILESIZE (bytes): %.4f\n", af/nn}'
 echo "MAX FILESIZE (bytes): ${max_fsize}"
-
-echo "AVERAGE DISK USAGE (blocks): $(echo "scale=4; $avg_disk / $num_files" | bc -l)"
+ 
+awk -v ad="$avg_disk" -v nn="$num_files" \
+    'BEGIN{printf "AVERAGE DISK USAGE (blocks): %.4f\n", ad/nn}'
 echo "MAX DISK USAGE (blocks): ${max_disk}"
