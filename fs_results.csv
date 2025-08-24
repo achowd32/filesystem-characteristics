@@ -1,4 +1,6 @@
  Distribution,# Files,# Dirs,# Symlinks,Avg. Depth,Max. Depth,Avg. Fanout,Max. Fanout,Avg. Filesize (Bytes),Max. Filesize (Bytes),Avg. Disk Usage (Blks),Max. Disk Usage (Blks)
+alpine,
+archlinux,
 fedora,4818,2148,706,3.9621,7,1.0479,687,35782.3796,10356336,36.9631,10116
 ubuntu,2090,568,172,4.2162,7,1.0018,295,48470.3139,4597928,49.6249,4492
 debian,4145,660,261,4.3827,7,1.0015,257,34044.1655,6302952,35.4731,6156

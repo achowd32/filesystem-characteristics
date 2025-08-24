@@ -97,4 +97,4 @@ awk -v af="$avg_fsize" -v nn="$num_files" 'BEGIN{printf "%.4f,", af/nn}' >> fs_r
 echo -n "${max_fsize}," >> fs_results.csv
  
 awk -v ad="$avg_disk" -v nn="$num_files" 'BEGIN{printf "%.4f,", ad/nn}' >> fs_results.csv
-echo "${max_disk}" >> fs_results.csv
+echo -n "${max_disk}" >> fs_results.csv

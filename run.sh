@@ -12,7 +12,8 @@ while read image; do
         docker start -a "${image}_fsc"
     else
         echo "Setting up container '${image}_fsc'"
-        docker run --name "${image}_fsc" -v .:/fsdb "${image}" bash -c \
+        docker run --name "${image}_fsc" -v .:/fsdb "${image}" /bin/bash -c \
             "cd fsdb; ./collate.sh /usr/"
     fi
+    echo "" >> fs_results.csv
 done < images.txt
