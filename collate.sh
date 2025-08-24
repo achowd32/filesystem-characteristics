@@ -83,22 +83,18 @@ while IFS= read name; do
 done < <(cd "$1"; find . -exec echo {} \;)
 
 # print overall properties
-echo "NUMBER OF FILES: ${num_files}"
-echo "NUMBER OF DIRECTORIES: ${num_dirs}"
-echo "NUMBER OF SYMLINKS: ${num_syml}"
+echo -n "${num_files}," >> fs_results.csv
+echo -n "${num_dirs}," >> fs_results.csv
+echo -n "${num_syml}," >> fs_results.csv
 
-awk -v ad="$avg_depth" -v nn="$num_nodes" \
-    'BEGIN{printf "AVERAGE DEPTH: %.4f\n", ad/nn}'
-echo "MAX DEPTH: ${max_depth}"
+awk -v ad="$avg_depth" -v nn="$num_nodes" 'BEGIN{printf "%.4f,", ad/nn}' >> fs_results.csv
+echo -n "${max_depth}," >> fs_results.csv
 
-awk -v af="$avg_fanout" -v nn="$num_nodes" \
-    'BEGIN{printf "AVERAGE FANOUT: %.4f\n", af/nn}'
-echo "MAX FANOUT: ${max_fanout}"
+awk -v af="$avg_fanout" -v nn="$num_nodes" 'BEGIN{printf "%.4f,", af/nn}' >> fs_results.csv
+echo -n "${max_fanout}," >> fs_results.csv
 
-awk -v af="$avg_fsize" -v nn="$num_files" \
-    'BEGIN{printf "AVERAGE FILESIZE (bytes): %.4f\n", af/nn}'
-echo "MAX FILESIZE (bytes): ${max_fsize}"
+awk -v af="$avg_fsize" -v nn="$num_files" 'BEGIN{printf "%.4f,", af/nn}' >> fs_results.csv
+echo -n "${max_fsize}," >> fs_results.csv
  
-awk -v ad="$avg_disk" -v nn="$num_files" \
-    'BEGIN{printf "AVERAGE DISK USAGE (blocks): %.4f\n", ad/nn}'
-echo "MAX DISK USAGE (blocks): ${max_disk}"
+awk -v ad="$avg_disk" -v nn="$num_files" 'BEGIN{printf "%.4f,", ad/nn}' >> fs_results.csv
+echo "${max_disk}" >> fs_results.csv
